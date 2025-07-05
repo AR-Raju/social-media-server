@@ -1,21 +1,30 @@
-import express from "express"
-import auth from "../../middlewares/auth"
-import validateRequest from "../../middlewares/validateRequest"
-import { MessageControllers } from "./message.controller"
-import { MessageValidation } from "./message.validation"
+import express from "express";
+import auth from "../../middlewares/auth";
+import validateRequest from "../../middlewares/validateRequest";
+import { USER_ROLE } from "../user/user.constant";
+import { MessageControllers } from "./message.controller";
+import { MessageValidation } from "./message.validation";
 
-const router = express.Router()
+const router = express.Router();
 
 // Message routes
 router.post(
   "/send/:recipientId",
-  auth(),
+  auth(USER_ROLE.user),
   validateRequest(MessageValidation.sendMessageValidationSchema),
-  MessageControllers.sendMessage,
-)
+  MessageControllers.sendMessage
+);
 
-router.get("/conversations", auth(), MessageControllers.getConversations)
+router.get(
+  "/conversations",
+  auth(USER_ROLE.user),
+  MessageControllers.getConversations
+);
 
-router.get("/:otherUserId", auth(), MessageControllers.getMessages)
+router.get(
+  "/:otherUserId",
+  auth(USER_ROLE.user),
+  MessageControllers.getMessages
+);
 
-export const MessageRoutes = router
+export const MessageRoutes = router;

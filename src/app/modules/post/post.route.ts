@@ -1,40 +1,51 @@
-import express from "express"
-import auth from "../../middlewares/auth"
-import validateRequest from "../../middlewares/validateRequest"
-import { PostControllers } from "./post.controller"
-import { PostValidation } from "./post.validation"
+import express from "express";
+import auth from "../../middlewares/auth";
+import validateRequest from "../../middlewares/validateRequest";
+import { USER_ROLE } from "../user/user.constant";
+import { PostControllers } from "./post.controller";
+import { PostValidation } from "./post.validation";
 
-const router = express.Router()
+const router = express.Router();
 
 // Post CRUD routes
-router.post("/", auth(), validateRequest(PostValidation.createPostValidationSchema), PostControllers.createPost)
+router.post(
+  "/",
+  auth(USER_ROLE.user),
+  validateRequest(PostValidation.createPostValidationSchema),
+  PostControllers.createPost
+);
 
-router.get("/", auth(), PostControllers.getAllPosts)
+router.get("/", auth(USER_ROLE.user), PostControllers.getAllPosts);
 
-router.get("/:id", auth(), PostControllers.getSinglePost)
+router.get("/:id", auth(USER_ROLE.user), PostControllers.getSinglePost);
 
-router.patch("/:id", auth(), validateRequest(PostValidation.updatePostValidationSchema), PostControllers.updatePost)
+router.patch(
+  "/:id",
+  auth(USER_ROLE.user),
+  validateRequest(PostValidation.updatePostValidationSchema),
+  PostControllers.updatePost
+);
 
-router.delete("/:id", auth(), PostControllers.deletePost)
+router.delete("/:id", auth(USER_ROLE.user), PostControllers.deletePost);
 
 // Post interaction routes
 router.post(
   "/:id/react",
-  auth(),
+  auth(USER_ROLE.user),
   validateRequest(PostValidation.reactToPostValidationSchema),
-  PostControllers.reactToPost,
-)
+  PostControllers.reactToPost
+);
 
 router.post(
   "/:id/comment",
-  auth(),
+  auth(USER_ROLE.user),
   validateRequest(PostValidation.createCommentValidationSchema),
-  PostControllers.addComment,
-)
+  PostControllers.addComment
+);
 
-router.post("/:id/share", auth(), PostControllers.sharePost)
+router.post("/:id/share", auth(USER_ROLE.user), PostControllers.sharePost);
 
 // User posts
-router.get("/user/:userId", auth(), PostControllers.getUserPosts)
+router.get("/user/:userId", auth(USER_ROLE.user), PostControllers.getUserPosts);
 
-export const PostRoutes = router
+export const PostRoutes = router;

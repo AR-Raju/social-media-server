@@ -18,6 +18,10 @@ const registerUser = async (payload: TRegisterUser) => {
   // Remove confirmPassword from payload
   const { confirmPassword, ...userData } = payload;
 
+  // Set default role to user if not provided
+  if (!userData.role || userData.role !== "admin") {
+    userData.role = "user";
+  }
   const user = await User.create(userData);
 
   // Remove password from response

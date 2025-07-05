@@ -1,6 +1,7 @@
 import express from "express";
 import httpStatus from "http-status";
 import auth from "../middlewares/auth";
+import { USER_ROLE } from "../modules/user/user.constant";
 import { SocketService } from "../socket/socket.service";
 import catchAsync from "../utils/catchAsync";
 import sendResponse from "../utils/sendResponse";
@@ -25,7 +26,7 @@ router.get(
 // Check if user is online
 router.get(
   "/user/:userId/online",
-  auth(),
+  auth(USER_ROLE.user),
   catchAsync(async (req, res) => {
     const { userId } = req.params;
     if (!userId) {
@@ -50,7 +51,7 @@ router.get(
 // Broadcast system message (admin only)
 router.post(
   "/broadcast",
-  auth(), // Add admin role check here
+  auth(USER_ROLE.admin), // Add admin role check here
   catchAsync(async (req, res) => {
     const { message, type = "info" } = req.body;
 
