@@ -1,4 +1,5 @@
-import { Schema, model, models } from "mongoose";
+import { Schema } from "mongoose";
+import { getModelSafely } from "../../utils/getModelSafely";
 import type { TReaction } from "./reaction.interface";
 
 const reactionSchema = new Schema<TReaction>(
@@ -35,5 +36,4 @@ reactionSchema.index({ user: 1, target: 1, targetType: 1 }, { unique: true });
 reactionSchema.index({ user: 1 });
 reactionSchema.index({ type: 1 });
 
-export const Reaction =
-  models.Comment || model<TReaction>("Reaction", reactionSchema);
+export const Reaction = getModelSafely<TReaction>("Reaction", reactionSchema);

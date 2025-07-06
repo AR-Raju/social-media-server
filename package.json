@@ -1,7 +1,7 @@
 {
   "name": "social-media-server",
   "version": "1.0.0",
-  "description": "Express.js backend for SWE Portfolio",
+  "description": "Express.js backend for social media application",
   "main": "dist/server.js",
   "scripts": {
     "build": "tsc",

@@ -195,7 +195,7 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
-    message: "Green Haven Nursery Platform API is running!",
+    message: "SocialConnect Platform API is running!",
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || "development",
   });
@@ -205,7 +205,7 @@ app.get("/", (req, res) => {
 app.get("/health", (req, res) => {
   res.status(200).json({
     success: true,
-    message: "Green Haven Nursery Platform API is running!",
+    message: "SocialConnect Platform API is running!",
     timestamp: new Date().toISOString(),
     database: isConnected ? "connected" : "disconnected",
   });

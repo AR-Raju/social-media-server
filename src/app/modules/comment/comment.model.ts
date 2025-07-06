@@ -1,4 +1,5 @@
-import { Schema, model, models } from "mongoose";
+import { Schema } from "mongoose";
+import { getModelSafely } from "../../utils/getModelSafely";
 import type { TComment, TCommentReaction } from "./comment.interface";
 
 const commentSchema = new Schema<TComment>(
@@ -148,8 +149,8 @@ commentSchema.pre("save", function (next) {
   next();
 });
 
-export const Comment =
-  models.Comment || model<TComment>("Comment", commentSchema);
-export const CommentReaction =
-  models.CommentReaction ||
-  model<TCommentReaction>("CommentReaction", commentReactionSchema);
+export const Comment = getModelSafely<TComment>("Comment", commentSchema);
+export const CommentReaction = getModelSafely<TCommentReaction>(
+  "CommentReaction",
+  commentReactionSchema
+);
