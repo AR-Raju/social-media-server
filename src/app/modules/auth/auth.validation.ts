@@ -24,7 +24,7 @@ const registerValidationSchema = z.object({
       confirmPassword: z.string({
         required_error: "Confirm password is required",
       }),
-      avatar: z.string().url().optional(),
+      avatar: z.union([z.string().url(), z.literal("")]).optional(),
     })
     .refine((data) => data.password === data.confirmPassword, {
       message: "Passwords don't match",
