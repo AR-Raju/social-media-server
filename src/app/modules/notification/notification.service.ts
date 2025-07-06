@@ -1,28 +1,33 @@
-import httpStatus from "http-status"
-import QueryBuilder from "../../builder/QueryBuilder"
-import AppError from "../../errors/AppError"
-import type { TNotification } from "./notification.interface"
-import { Notification } from "./notification.model"
-import { SocketService } from "../../socket/socket.service"
+import httpStatus from "http-status";
+import QueryBuilder from "../../builder/QueryBuilder";
+import AppError from "../../errors/AppError";
+import { SocketService } from "../../socket/socket.service";
+import type { TNotification } from "./notification.interface";
+import { Notification } from "./notification.model";
 
-const getNotificationsFromDB = async (userId: string, query: Record<string, unknown>) => {
+const getNotificationsFromDB = async (
+  userId: string,
+  query: Record<string, unknown>
+) => {
   const notificationQuery = new QueryBuilder(
-    Notification.find({ recipient: userId }).populate("sender", "name avatar").sort({ createdAt: -1 }),
-    query,
+    Notification.find({ recipient: userId })
+      .populate("sender", "name avatar")
+      .sort({ createdAt: -1 }),
+    query
   )
     .filter()
     .sort()
     .paginate()
-    .fields()
+    .fields();
 
-  const result = await notificationQuery.modelQuery
-  const meta = await notificationQuery.countTotal()
+  const result = await notificationQuery.modelQuery;
+  const meta = await notificationQuery.countTotal();
 
   // Get unread count
   const unreadCount = await Notification.countDocuments({
     recipient: userId,
     isRead: false,
-  })
+  });
 
   return {
     meta: {
@@ -30,72 +35,89 @@ const getNotificationsFromDB = async (userId: string, query: Record<string, unkn
       unreadCount,
     },
     result,
-  }
-}
+  };
+};
 
-const markNotificationsAsReadIntoDB = async (userId: string, notificationIds?: string[], markAll?: boolean) => {
-  const updateQuery: any = { recipient: userId }
+const markNotificationsAsReadIntoDB = async (
+  userId: string,
+  notificationIds?: string[],
+  markAll?: boolean
+) => {
+  const updateQuery: any = { recipient: userId };
 
   if (markAll) {
-    updateQuery.isRead = false
+    updateQuery.isRead = false;
   } else if (notificationIds && notificationIds.length > 0) {
-    updateQuery._id = { $in: notificationIds }
+    updateQuery._id = { $in: notificationIds };
   } else {
-    throw new AppError(httpStatus.BAD_REQUEST, "Either provide notification IDs or set markAll to true")
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "Either provide notification IDs or set markAll to true"
+    );
   }
 
-  const result = await Notification.updateMany(updateQuery, { isRead: true }, { new: true })
+  const result = await Notification.updateMany(
+    updateQuery,
+    { isRead: true },
+    { new: true }
+  );
 
   return {
     message: `${result.modifiedCount} notifications marked as read`,
     modifiedCount: result.modifiedCount,
-  }
-}
+  };
+};
 
-const deleteNotificationFromDB = async (userId: string, notificationId: string) => {
-  const notification = await Notification.findById(notificationId)
+const deleteNotificationFromDB = async (
+  userId: string,
+  notificationId: string
+) => {
+  const notification = await Notification.findById(notificationId);
   if (!notification) {
-    throw new AppError(httpStatus.NOT_FOUND, "Notification not found")
+    throw new AppError(httpStatus.NOT_FOUND, "Notification not found");
   }
 
   if (notification.recipient.toString() !== userId) {
-    throw new AppError(httpStatus.FORBIDDEN, "You can only delete your own notifications")
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      "You can only delete your own notifications"
+    );
   }
 
-  await Notification.findByIdAndDelete(notificationId)
-  return notification
-}
+  await Notification.findByIdAndDelete(notificationId);
+  return notification;
+};
 
 const createNotificationIntoDB = async (notificationData: TNotification) => {
-  const notification = await Notification.create(notificationData)
+  const notification = await Notification.create(notificationData);
 
   const populatedNotification = await Notification.findById(notification._id)
     .populate("sender", "name avatar")
-    .populate("recipient", "name")
+    .populate("recipient", "name");
 
   // Send real-time notification
   await SocketService.sendNotification({
     notificationId: notification._id as string,
-    recipientId: notificationData.recipient,
-    senderId: notificationData.sender,
+    recipientId: notificationData.recipient.toString(),
+    senderId: notificationData.sender.toString(),
     type: notificationData.type,
     title: notificationData.title,
     message: notificationData.message,
     data: notificationData.data,
     timestamp: notification.createdAt as Date,
-  })
+  });
 
-  return populatedNotification
-}
+  return populatedNotification;
+};
 
 const getUnreadCountFromDB = async (userId: string) => {
   const count = await Notification.countDocuments({
     recipient: userId,
     isRead: false,
-  })
+  });
 
-  return { unreadCount: count }
-}
+  return { unreadCount: count };
+};
 
 export const NotificationServices = {
   getNotificationsFromDB,
@@ -103,4 +125,4 @@ export const NotificationServices = {
   deleteNotificationFromDB,
   createNotificationIntoDB,
   getUnreadCountFromDB,
-}
+};

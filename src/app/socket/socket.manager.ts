@@ -36,8 +36,7 @@ class SocketManager {
     this.onlineUsers.set(userId, {
       userId,
       socketId,
-      name: socket.user.name,
-      avatar: socket.user?.avatar,
+      name: socket.use.name,
       lastSeen: new Date(),
     });
 
@@ -50,7 +49,7 @@ class SocketManager {
     // Notify friends that user is online
     this.notifyFriendsUserOnline(userId);
 
-    console.log(`User ${socket.user.name} connected with socket ${socketId}`);
+    console.log(`User ${socket.use.name} connected with socket ${socketId}`);
   }
 
   removeUser(socket: IAuthenticatedSocket) {
@@ -81,7 +80,7 @@ class SocketManager {
     this.typingUsers.delete(socketId);
 
     console.log(
-      `User ${socket.user?.name} disconnected from socket ${socketId}`
+      `User ${socket.use?.name} disconnected from socket ${socketId}`
     );
   }
 

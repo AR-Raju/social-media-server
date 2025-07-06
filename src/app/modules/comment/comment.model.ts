@@ -151,5 +151,5 @@ commentSchema.pre("save", function (next) {
 export const Comment =
   models.Comment || model<TComment>("Comment", commentSchema);
 export const CommentReaction =
-  models.Comment ||
+  models.CommentReaction ||
   model<TCommentReaction>("CommentReaction", commentReactionSchema);
