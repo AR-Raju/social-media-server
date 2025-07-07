@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "zod";
 
 const createEventValidationSchema = z.object({
   body: z.object({
@@ -17,6 +17,7 @@ const createEventValidationSchema = z.object({
       .max(500, "Location cannot exceed 500 characters")
       .trim(),
     category: z.enum([
+      "all",
       "music",
       "sports",
       "technology",
@@ -28,32 +29,61 @@ const createEventValidationSchema = z.object({
       "social",
       "other",
     ]),
-    maxAttendees: z.number().min(1, "Max attendees must be at least 1").optional(),
+    maxAttendees: z
+      .number()
+      .min(1, "Max attendees must be at least 1")
+      .optional(),
     price: z.number().min(0, "Price cannot be negative").default(0),
     images: z.array(z.string().url()).optional(),
     tags: z.array(z.string()).optional(),
   }),
-})
+});
 
 const updateEventValidationSchema = z.object({
   body: z.object({
-    title: z.string().max(200, "Title cannot exceed 200 characters").trim().optional(),
-    description: z.string().max(2000, "Description cannot exceed 2000 characters").trim().optional(),
+    title: z
+      .string()
+      .max(200, "Title cannot exceed 200 characters")
+      .trim()
+      .optional(),
+    description: z
+      .string()
+      .max(2000, "Description cannot exceed 2000 characters")
+      .trim()
+      .optional(),
     date: z.string().optional(),
     time: z.string().trim().optional(),
-    location: z.string().max(500, "Location cannot exceed 500 characters").trim().optional(),
-    category: z
-      .enum(["music", "sports", "technology", "business", "education", "food", "art", "health", "social", "other"])
+    location: z
+      .string()
+      .max(500, "Location cannot exceed 500 characters")
+      .trim()
       .optional(),
-    maxAttendees: z.number().min(1, "Max attendees must be at least 1").optional(),
+    category: z
+      .enum([
+        "music",
+        "sports",
+        "technology",
+        "business",
+        "education",
+        "food",
+        "art",
+        "health",
+        "social",
+        "other",
+      ])
+      .optional(),
+    maxAttendees: z
+      .number()
+      .min(1, "Max attendees must be at least 1")
+      .optional(),
     price: z.number().min(0, "Price cannot be negative").optional(),
     images: z.array(z.string().url()).optional(),
     tags: z.array(z.string()).optional(),
     isActive: z.boolean().optional(),
   }),
-})
+});
 
 export const EventValidation = {
   createEventValidationSchema,
   updateEventValidationSchema,
-}
+};
