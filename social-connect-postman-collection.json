@@ -1,0 +1,1692 @@
+{
+  "info": {
+    "name": "SocialConnect Platform API",
+    "description": "Complete API collection for SocialConnect social media platform including authentication, posts, events, trading, messaging, and more.",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "postId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "eventId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "listingId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "groupId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🔐 Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\",\n  \"confirmPassword\": \"password123\",\n  \"role\": \"user\",\n  \"avatar\": \"https://example.com/avatar.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('accessToken', response.data.accessToken);",
+                  "    pm.collectionVariables.set('userId', response.data.user._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"oldPassword\": \"password123\",\n  \"newPassword\": \"newpassword123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/change-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "change-password"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh-token",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "refresh-token"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "logout"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "👥 Users",
+      "item": [
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Updated\",\n  \"bio\": \"Updated bio\",\n  \"location\": \"New York\",\n  \"website\": \"https://johndoe.com\",\n  \"avatar\": \"https://example.com/new-avatar.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "me"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "{{userId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/search?searchTerm=john&limit=10&page=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "search"],
+              "query": [
+                {
+                  "key": "searchTerm",
+                  "value": "john"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Friends",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}/friends",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "{{userId}}", "friends"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Block User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/block/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "block", "{{userId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Unblock User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/unblock/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "unblock", "{{userId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📝 Posts",
+      "item": [
+        {
+          "name": "Create Post",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('postId', response.data._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"This is my first post!\",\n  \"type\": \"text\",\n  \"visibility\": \"friends\",\n  \"images\": [\"https://example.com/image1.jpg\"],\n  \"tags\": [\"firstpost\", \"hello\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/posts",
+              "host": ["{{baseUrl}}"],
+              "path": ["posts"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Posts (Feed)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/posts?limit=10&page=1",
+              "host": ["{{baseUrl}}"],
+              "path": ["posts"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Post",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/posts/{{postId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["posts", "{{postId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Post",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Updated post content\",\n  \"visibility\": \"public\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/posts/{{postId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["posts", "{{postId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Post",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/posts/{{postId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["posts", "{{postId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "React to Post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"like\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/posts/{{postId}}/react",
+              "host": ["{{baseUrl}}"],
+              "path": ["posts", "{{postId}}", "react"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Comment to Post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Great post!\",\n  \"image\": \"https://example.com/comment-image.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/posts/{{postId}}/comment",
+              "host": ["{{baseUrl}}"],
+              "path": ["posts", "{{postId}}", "comment"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Share Post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Sharing this amazing post!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/posts/{{postId}}/share",
+              "host": ["{{baseUrl}}"],
+              "path": ["posts", "{{postId}}", "share"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Posts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/posts/user/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["posts", "user", "{{userId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "💬 Comments",
+      "item": [
+        {
+          "name": "Create Comment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"This is a comment on the post\",\n  \"image\": \"https://example.com/comment-image.jpg\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/comments/post/{{postId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["comments", "post", "{{postId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Post Comments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/comments/post/{{postId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["comments", "post", "{{postId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "React to Comment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"like\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/comments/COMMENT_ID/react",
+              "host": ["{{baseUrl}}"],
+              "path": ["comments", "COMMENT_ID", "react"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "👫 Friends",
+      "item": [
+        {
+          "name": "Send Friend Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"Hi! I'd like to be friends.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/friends/request/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["friends", "request", "{{userId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Accept Friend Request",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/friends/accept/REQUEST_ID",
+              "host": ["{{baseUrl}}"],
+              "path": ["friends", "accept", "REQUEST_ID"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Reject Friend Request",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/friends/reject/REQUEST_ID",
+              "host": ["{{baseUrl}}"],
+              "path": ["friends", "reject", "REQUEST_ID"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Friend Requests",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/friends/requests",
+              "host": ["{{baseUrl}}"],
+              "path": ["friends", "requests"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Friends List",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/friends/list",
+              "host": ["{{baseUrl}}"],
+              "path": ["friends", "list"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Friend Suggestions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/friends/suggestions",
+              "host": ["{{baseUrl}}"],
+              "path": ["friends", "suggestions"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Friend",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/friends/remove/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["friends", "remove", "{{userId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "👥 Groups",
+      "item": [
+        {
+          "name": "Create Group",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('groupId', response.data._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Tech Enthusiasts\",\n  \"description\": \"A group for technology lovers\",\n  \"type\": \"group\",\n  \"category\": \"Technology\",\n  \"privacy\": \"public\",\n  \"avatar\": \"https://example.com/group-avatar.jpg\",\n  \"rules\": [\"Be respectful\", \"No spam\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/groups/create",
+              "host": ["{{baseUrl}}"],
+              "path": ["groups", "create"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Groups",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/groups",
+              "host": ["{{baseUrl}}"],
+              "path": ["groups"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Group",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/groups/{{groupId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["groups", "{{groupId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Join Group",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/groups/{{groupId}}/join",
+              "host": ["{{baseUrl}}"],
+              "path": ["groups", "{{groupId}}", "join"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Leave Group",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/groups/{{groupId}}/leave",
+              "host": ["{{baseUrl}}"],
+              "path": ["groups", "{{groupId}}", "leave"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Group Posts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/groups/{{groupId}}/posts",
+              "host": ["{{baseUrl}}"],
+              "path": ["groups", "{{groupId}}", "posts"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Groups",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/groups/user",
+              "host": ["{{baseUrl}}"],
+              "path": ["groups", "user"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Group Suggestions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/groups/suggestions",
+              "host": ["{{baseUrl}}"],
+              "path": ["groups", "suggestions"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🎉 Events",
+      "item": [
+        {
+          "name": "Create Event",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('eventId', response.data._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Tech Conference 2024\",\n  \"description\": \"Annual technology conference featuring latest trends\",\n  \"date\": \"2024-12-15T00:00:00.000Z\",\n  \"time\": \"09:00 AM\",\n  \"location\": \"Convention Center, New York\",\n  \"category\": \"technology\",\n  \"maxAttendees\": 500,\n  \"price\": 99.99,\n  \"images\": [\"https://example.com/event-banner.jpg\"],\n  \"tags\": [\"tech\", \"conference\", \"networking\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/events",
+              "host": ["{{baseUrl}}"],
+              "path": ["events"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/events?limit=10&page=1&category=technology",
+              "host": ["{{baseUrl}}"],
+              "path": ["events"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "category",
+                  "value": "technology"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Event",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/events/{{eventId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["events", "{{eventId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Event",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Tech Conference 2024\",\n  \"description\": \"Updated description\",\n  \"price\": 89.99\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/events/{{eventId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["events", "{{eventId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Event",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/events/{{eventId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["events", "{{eventId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Join Event",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/events/{{eventId}}/join",
+              "host": ["{{baseUrl}}"],
+              "path": ["events", "{{eventId}}", "join"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Leave Event",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/events/{{eventId}}/leave",
+              "host": ["{{baseUrl}}"],
+              "path": ["events", "{{eventId}}", "leave"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Event Attendees",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/events/{{eventId}}/attendees",
+              "host": ["{{baseUrl}}"],
+              "path": ["events", "{{eventId}}", "attendees"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/events/my?type=all",
+              "host": ["{{baseUrl}}"],
+              "path": ["events", "my"],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "all",
+                  "description": "all, organized, attending"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Events by Location",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/events/location/New York",
+              "host": ["{{baseUrl}}"],
+              "path": ["events", "location", "New York"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🛒 Trading",
+      "item": [
+        {
+          "name": "Create Listing",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('listingId', response.data._id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"iPhone 14 Pro Max\",\n  \"description\": \"Excellent condition iPhone 14 Pro Max, 256GB, Space Black. Includes original box and charger.\",\n  \"price\": 899.99,\n  \"category\": \"electronics\",\n  \"condition\": \"like_new\",\n  \"location\": \"San Francisco, CA\",\n  \"images\": [\"https://example.com/iphone1.jpg\", \"https://example.com/iphone2.jpg\"],\n  \"tags\": [\"iphone\", \"apple\", \"smartphone\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/trading/listings",
+              "host": ["{{baseUrl}}"],
+              "path": ["trading", "listings"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Listings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trading/listings?limit=10&page=1&category=electronics&condition=like_new",
+              "host": ["{{baseUrl}}"],
+              "path": ["trading", "listings"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "category",
+                  "value": "electronics"
+                },
+                {
+                  "key": "condition",
+                  "value": "like_new"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Listing",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trading/listings/{{listingId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["trading", "listings", "{{listingId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Listing",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"iPhone 14 Pro Max - Price Reduced!\",\n  \"price\": 849.99,\n  \"description\": \"Updated description with price reduction\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/trading/listings/{{listingId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["trading", "listings", "{{listingId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Listing",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trading/listings/{{listingId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["trading", "listings", "{{listingId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Contact Seller",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"Hi! I'm interested in your iPhone. Is it still available? Can we meet this weekend?\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/trading/listings/{{listingId}}/contact",
+              "host": ["{{baseUrl}}"],
+              "path": ["trading", "listings", "{{listingId}}", "contact"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mark as Sold",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trading/listings/{{listingId}}/sold",
+              "host": ["{{baseUrl}}"],
+              "path": ["trading", "listings", "{{listingId}}", "sold"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Toggle Like Listing",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trading/listings/{{listingId}}/like",
+              "host": ["{{baseUrl}}"],
+              "path": ["trading", "listings", "{{listingId}}", "like"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Listings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trading/listings/my",
+              "host": ["{{baseUrl}}"],
+              "path": ["trading", "listings", "my"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Listings by Location",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trading/listings/location/San Francisco",
+              "host": ["{{baseUrl}}"],
+              "path": ["trading", "listings", "location", "San Francisco"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Listing Contacts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trading/listings/{{listingId}}/contacts",
+              "host": ["{{baseUrl}}"],
+              "path": ["trading", "listings", "{{listingId}}", "contacts"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "💾 Saved Items",
+      "item": [
+        {
+          "name": "Save Post",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/saved/posts/{{postId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["saved", "posts", "{{postId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Save Event",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/saved/events/{{eventId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["saved", "events", "{{eventId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Save Listing",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/saved/listings/{{listingId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["saved", "listings", "{{listingId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Unsave Post",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/saved/posts/{{postId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["saved", "posts", "{{postId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Unsave Event",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/saved/events/{{eventId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["saved", "events", "{{eventId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Unsave Listing",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/saved/listings/{{listingId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["saved", "listings", "{{listingId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Saved Items",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/saved",
+              "host": ["{{baseUrl}}"],
+              "path": ["saved"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Saved Posts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/saved/posts",
+              "host": ["{{baseUrl}}"],
+              "path": ["saved", "posts"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Saved Events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/saved/events",
+              "host": ["{{baseUrl}}"],
+              "path": ["saved", "events"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Saved Listings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/saved/listings",
+              "host": ["{{baseUrl}}"],
+              "path": ["saved", "listings"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Check if Post is Saved",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/saved/posts/{{postId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["saved", "posts", "{{postId}}", "status"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Check if Event is Saved",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/saved/events/{{eventId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["saved", "events", "{{eventId}}", "status"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Check if Listing is Saved",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/saved/listings/{{listingId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["saved", "listings", "{{listingId}}", "status"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "💬 Messages",
+      "item": [
+        {
+          "name": "Send Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Hello! How are you?\",\n  \"type\": \"text\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/messages/send/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["messages", "send", "{{userId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Conversations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/messages/conversations",
+              "host": ["{{baseUrl}}"],
+              "path": ["messages", "conversations"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Messages with User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/messages/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["messages", "{{userId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔔 Notifications",
+      "item": [
+        {
+          "name": "Get Notifications",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/notifications",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Unread Count",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/unread-count",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications", "unread-count"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mark Notifications as Read",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"markAll\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/notifications/mark-read",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications", "mark-read"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Notification",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/NOTIFICATION_ID",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications", "NOTIFICATION_ID"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "⚡ Reactions",
+      "item": [
+        {
+          "name": "Add Reaction to Post",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"like\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/reactions/post/{{postId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["reactions", "post", "{{postId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Post Reactions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reactions/post/{{postId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["reactions", "post", "{{postId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Reaction Summary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reactions/post/{{postId}}/summary",
+              "host": ["{{baseUrl}}"],
+              "path": ["reactions", "post", "{{postId}}", "summary"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Reaction",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reactions/post/{{postId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["reactions", "post", "{{postId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get My Reactions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/reactions/user/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["reactions", "user", "me"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📁 Upload",
+      "item": [
+        {
+          "name": "Upload Image",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/upload",
+              "host": ["{{baseUrl}}"],
+              "path": ["upload"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔌 Socket",
+      "item": [
+        {
+          "name": "Get Online Users Count",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/socket/online-count",
+              "host": ["{{baseUrl}}"],
+              "path": ["socket", "online-count"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Check User Online Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/socket/user/{{userId}}/online",
+              "host": ["{{baseUrl}}"],
+              "path": ["socket", "user", "{{userId}}", "online"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Broadcast System Message (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"System maintenance in 30 minutes\",\n  \"type\": \"warning\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/socket/broadcast",
+              "host": ["{{baseUrl}}"],
+              "path": ["socket", "broadcast"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🏠 Health Check",
+      "item": [
+        {
+          "name": "Root Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/../../",
+              "host": ["{{baseUrl}}"],
+              "path": ["../..", ""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "API Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/../health",
+              "host": ["{{baseUrl}}"],
+              "path": ["..", "health"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Auto-set authorization header if token exists",
+          "const token = pm.collectionVariables.get('accessToken');",
+          "if (token && token.length > 0) {",
+          "    pm.request.headers.add({",
+          "        key: 'Authorization',",
+          "        value: `Bearer ${token}`",
+          "    });",
+          "}"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global test to check response format",
+          "pm.test('Response should be JSON', function () {",
+          "    pm.response.to.be.json;",
+          "});",
+          "",
+          "pm.test('Response should have success field', function () {",
+          "    const jsonData = pm.response.json();",
+          "    pm.expect(jsonData).to.have.property('success');",
+          "});",
+          "",
+          "pm.test('Response should have message field', function () {",
+          "    const jsonData = pm.response.json();",
+          "    pm.expect(jsonData).to.have.property('message');",
+          "});"
+        ]
+      }
+    }
+  ]
+}

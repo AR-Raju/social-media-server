@@ -1,243 +1,286 @@
-# Social Media API Documentation
+# SocialConnect Platform API - Postman Collection Setup
 
-## Overview
+This document provides instructions for setting up and using the Postman collection for the SocialConnect Platform API.
 
-This is a comprehensive REST API for a social media platform built with Node.js, Express, and MongoDB. The API supports user authentication, posts, comments, friends, messaging, groups, and notifications.
+## 📥 Import Collection
 
-## Base URL
+1. **Download the Collection**: Save the `postman-collection.json` file to your computer
+2. **Open Postman**: Launch the Postman application
+3. **Import**: Click "Import" button → "Upload Files" → Select `postman-collection.json`
+4. **Verify**: The collection should appear in your Postman workspace
 
-- **Development**: `http://localhost:5000/api`
-- **Production**: `https://your-production-api.com/api`
+## 🔧 Environment Setup
 
-## Authentication
+### Collection Variables
 
-The API uses JWT (JSON Web Tokens) for authentication. Include the token in the Authorization header:
-\`\`\`
-Authorization: Bearer <your-access-token>
-\`\`\`
+The collection includes these pre-configured variables:
 
-## Response Format
+- `baseUrl`: API base URL (default: `http://localhost:5000/api`)
+- `accessToken`: JWT token for authentication (auto-populated after login)
+- `userId`: Current user ID (auto-populated after login)
+- `postId`: Sample post ID (auto-populated when creating posts)
+- `eventId`: Sample event ID (auto-populated when creating events)
+- `listingId`: Sample listing ID (auto-populated when creating listings)
+- `groupId`: Sample group ID (auto-populated when creating groups)
 
-All API responses follow this format:
-\`\`\`json
-{
-"success": true,
-"message": "Success message",
-"data": {}, // Response data
-"pagination": { // Only for paginated responses
-"page": 1,
-"limit": 10,
-"total": 100,
-"pages": 10
-}
-}
-\`\`\`
+### Update Base URL
 
-## Error Handling
+If your API runs on a different URL:
 
-Error responses follow this format:
-\`\`\`json
-{
-"success": false,
-"message": "Error message",
-"error": "Detailed error information"
-}
+1. Go to the collection settings (click the three dots next to collection name)
+2. Select "Edit"
+3. Go to "Variables" tab
+4. Update the `baseUrl` value
+
+## 🚀 Getting Started
+
+### 1. Authentication Flow
+
 \`\`\`
 
-## Rate Limiting
+1. Register User → Creates new account
+2. Login User → Returns access token (auto-saved to collection variables)
+3. Use authenticated endpoints → Token automatically added to requests
+   \`\`\`
 
-- **General**: 100 requests per 15 minutes per IP
-- **Authentication**: 5 requests per 15 minutes per IP
-- **Upload**: 10 requests per 15 minutes per user
+### 2. Basic Workflow
 
-## Endpoints Overview
+\`\`\`
+Authentication → Create Content → Interact → Manage
+\`\`\`
 
-### Authentication
+## 📋 API Endpoints Overview
 
-- `POST /auth/register` - Register a new user
-- `POST /auth/login` - Login user
-- `GET /auth/me` - Get current user
+### 🔐 Authentication
+
+- `POST /auth/register` - Register new user
+- `POST /auth/login` - Login user (saves token automatically)
+- `GET /auth/me` - Get current user profile
 - `POST /auth/change-password` - Change password
 - `POST /auth/refresh-token` - Refresh access token
 - `POST /auth/logout` - Logout user
-- `GET /auth/google` - Google OAuth
-- `GET /auth/facebook` - Facebook OAuth
 
-### Users
+### 👥 Users
 
-- `PATCH /users/me` - Update user profile
-- `GET /users/:id` - Get user profile
+- `PATCH /users/me` - Update profile
+- `GET /users/{id}` - Get user profile
 - `GET /users/search` - Search users
-- `GET /users/:id/friends` - Get user friends
-- `GET /users/:id/groups` - Get user groups
-- `POST /users/block/:id` - Block user
-- `POST /users/unblock/:id` - Unblock user
+- `GET /users/{id}/friends` - Get user friends
+- `POST /users/block/{id}` - Block user
+- `POST /users/unblock/{id}` - Unblock user
 
-### Posts
+### 📝 Posts
 
-- `POST /posts` - Create a new post
-- `GET /posts` - Get feed posts (paginated)
-- `GET /posts/:id` - Get single post
-- `PATCH /posts/:id` - Update post
-- `DELETE /posts/:id` - Delete post
-- `POST /posts/:id/react` - React to post
-- `POST /posts/:id/share` - Share post
-- `GET /posts/user/:id` - Get user posts
+- `POST /posts` - Create post
+- `GET /posts` - Get feed posts
+- `GET /posts/{id}` - Get single post
+- `PATCH /posts/{id}` - Update post
+- `DELETE /posts/{id}` - Delete post
+- `POST /posts/{id}/react` - React to post
+- `POST /posts/{id}/comment` - Add comment
+- `POST /posts/{id}/share` - Share post
 
-### Comments
+### 🎉 Events
 
-- `POST /comments/post/:id` - Add comment to post
-- `GET /comments/post/:id` - Get post comments
-- `GET /comments/:id` - Get single comment
-- `PATCH /comments/:id` - Update comment
-- `DELETE /comments/:id` - Delete comment
-- `POST /comments/:id/react` - React to comment
-- `GET /comments/:id/replies` - Get comment replies
+- `POST /events` - Create event
+- `GET /events` - Get all events
+- `GET /events/{id}` - Get single event
+- `PATCH /events/{id}` - Update event
+- `DELETE /events/{id}` - Delete event
+- `POST /events/{id}/join` - Join event
+- `POST /events/{id}/leave` - Leave event
+- `GET /events/{id}/attendees` - Get attendees
+- `GET /events/my` - Get my events
 
-### Friends
+### 🛒 Trading
 
-- `POST /friends/request/:id` - Send friend request
-- `POST /friends/accept/:id` - Accept friend request
-- `POST /friends/reject/:id` - Reject friend request
-- `DELETE /friends/remove/:id` - Remove friend
-- `GET /friends/list` - Get friends list
+- `POST /trading/listings` - Create listing
+- `GET /trading/listings` - Get all listings
+- `GET /trading/listings/{id}` - Get single listing
+- `PATCH /trading/listings/{id}` - Update listing
+- `DELETE /trading/listings/{id}` - Delete listing
+- `POST /trading/listings/{id}/contact` - Contact seller
+- `POST /trading/listings/{id}/sold` - Mark as sold
+- `POST /trading/listings/{id}/like` - Toggle like
+
+### 💾 Saved Items
+
+- `POST /saved/{type}/{id}` - Save item (posts/events/listings)
+- `DELETE /saved/{type}/{id}` - Unsave item
+- `GET /saved` - Get all saved items
+- `GET /saved/posts` - Get saved posts
+- `GET /saved/events` - Get saved events
+- `GET /saved/listings` - Get saved listings
+- `GET /saved/{type}/{id}/status` - Check save status
+
+### 👫 Friends
+
+- `POST /friends/request/{id}` - Send friend request
+- `POST /friends/accept/{requestId}` - Accept request
+- `POST /friends/reject/{requestId}` - Reject request
 - `GET /friends/requests` - Get friend requests
-- `GET /friends/requests/sent` - Get sent friend requests
-- `GET /friends/suggestions` - Get friend suggestions
+- `GET /friends/list` - Get friends list
+- `GET /friends/suggestions` - Get suggestions
 
-### Messages
-
-- `POST /messages/send/:id` - Send message
-- `GET /messages/conversations` - Get conversations
-- `GET /messages/:id` - Get messages with user
-- `PATCH /messages/:id/read` - Mark messages as read
-
-### Groups
+### 👥 Groups
 
 - `POST /groups/create` - Create group
 - `GET /groups` - Get all groups
-- `GET /groups/:id` - Get single group
-- `PATCH /groups/:id` - Update group
-- `POST /groups/:id/join` - Join group
-- `POST /groups/:id/leave` - Leave group
-- `GET /groups/:id/posts` - Get group posts
-- `GET /groups/user` - Get user groups
-- `GET /groups/suggestions` - Get group suggestions
-- `DELETE /groups/:id` - Delete group
+- `GET /groups/{id}` - Get single group
+- `POST /groups/{id}/join` - Join group
+- `POST /groups/{id}/leave` - Leave group
+- `GET /groups/{id}/posts` - Get group posts
 
-### Notifications
+### 💬 Messages
+
+- `POST /messages/send/{userId}` - Send message
+- `GET /messages/conversations` - Get conversations
+- `GET /messages/{userId}` - Get messages with user
+
+### 🔔 Notifications
 
 - `GET /notifications` - Get notifications
 - `GET /notifications/unread-count` - Get unread count
 - `PATCH /notifications/mark-read` - Mark as read
-- `DELETE /notifications/:id` - Delete notification
+- `DELETE /notifications/{id}` - Delete notification
 
-### Upload
+## 🔍 Testing Features
 
-- `POST /upload` - Upload single image
-- `POST /upload/multiple` - Upload multiple images
+### Auto-Token Management
 
-### Search
+- Login automatically saves the access token
+- All authenticated requests use the saved token
+- No need to manually copy/paste tokens
 
-- `GET /search` - Global search (users, posts, groups)
+### Auto-ID Extraction
 
-## Query Parameters
+- Creating posts/events/listings automatically saves their IDs
+- Use these IDs in subsequent requests
+- Reduces manual ID copying
+
+### Global Tests
+
+Every request includes automatic tests for:
+
+- JSON response format
+- Success field presence
+- Message field presence
+
+## 📊 Query Parameters
 
 ### Pagination
 
-- `page` - Page number (default: 1)
-- `limit` - Items per page (default: 10, max: 100)
+\`\`\`
+?page=1&limit=10
+\`\`\`
 
-### Sorting
+### Search
 
-- `sort` - Sort field with direction (e.g., `-createdAt`, `name`)
+\`\`\`
+?searchTerm=keyword
+\`\`\`
 
 ### Filtering
 
-- `isRead` - Filter notifications by read status
-- `type` - Filter by content type
-- `category` - Filter groups by category
-- `privacy` - Filter by privacy level
-
-## File Upload
-
-- **Supported formats**: JPG, JPEG, PNG, GIF, WebP
-- **Max file size**: 5MB per file
-- **Max files**: 10 files per request
-
-## WebSocket Events
-
-The API supports real-time features via Socket.IO:
-
-### Client Events
-
-- `join_room` - Join user room
-- `send_message` - Send real-time message
-- `typing_start` - Start typing indicator
-- `typing_stop` - Stop typing indicator
-
-### Server Events
-
-- `new_message` - New message received
-- `new_notification` - New notification
-- `user_online` - User came online
-- `user_offline` - User went offline
-- `typing` - Someone is typing
-
-## Status Codes
-
-- `200` - Success
-- `201` - Created
-- `400` - Bad Request
-- `401` - Unauthorized
-- `403` - Forbidden
-- `404` - Not Found
-- `409` - Conflict
-- `422` - Validation Error
-- `429` - Too Many Requests
-- `500` - Internal Server Error
-
-## Testing with Postman
-
-1. **Import Collection**: Import the `Social_Media_API_Complete.postman_collection.json` file
-2. **Import Environment**: Import the environment file for your target environment
-3. **Set Base URL**: Update the `baseUrl` variable in your environment
-4. **Authentication**:
-   - Run the "Register User" or "Login User" request first
-   - The access token will be automatically saved to environment variables
-   - All subsequent requests will use this token automatically
-
-## Environment Variables
-
-Make sure to set these environment variables in your server:
-
-\`\`\`env
-NODE_ENV=development
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/socialmedia
-JWT_SECRET=your-jwt-secret
-JWT_REFRESH_SECRET=your-refresh-secret
-JWT_EXPIRE=15m
-JWT_REFRESH_EXPIRE=7d
-CLOUDINARY_CLOUD_NAME=your-cloudinary-name
-CLOUDINARY_API_KEY=your-cloudinary-key
-CLOUDINARY_API_SECRET=your-cloudinary-secret
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
-FACEBOOK_APP_ID=your-facebook-app-id
-FACEBOOK_APP_SECRET=your-facebook-app-secret
+\`\`\`
+?category=technology&status=active
 \`\`\`
 
-## Getting Started
+### Sorting
 
-1. Clone the repository
-2. Install dependencies: `npm install`
-3. Set up environment variables
-4. Start MongoDB
-5. Run the server: `npm run dev`
-6. Import Postman collection and environment
-7. Start testing the API endpoints
+\`\`\`
+?sortBy=createdAt&sortOrder=desc
+\`\`\`
 
-## Support
+## 🔧 Common Use Cases
 
-For issues or questions, please refer to the API documentation or contact the development team.
+### 1. Complete User Journey
+
+\`\`\`
+
+1. Register → Login → Update Profile
+2. Create Post → React → Comment
+3. Create Event → Join Event
+4. Create Listing → Contact Seller
+5. Save Items → View Saved
+   \`\`\`
+
+### 2. Social Interactions
+
+\`\`\`
+
+1. Search Users → Send Friend Request
+2. Accept Friend Request → View Friends
+3. Create Group → Join Group
+4. Send Messages → View Conversations
+   \`\`\`
+
+### 3. Content Management
+
+\`\`\`
+
+1. Create Content (Post/Event/Listing)
+2. Update Content
+3. Interact (Like/Comment/Join)
+4. Save for Later
+5. Delete if Needed
+   \`\`\`
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+1. **401 Unauthorized**
+   - Ensure you're logged in
+   - Check if token is saved in collection variables
+   - Try refreshing the token
+
+2. **404 Not Found**
+   - Verify the endpoint URL
+   - Check if required IDs are set in variables
+   - Ensure the resource exists
+
+3. **400 Bad Request**
+   - Check request body format
+   - Verify required fields are included
+   - Validate data types and constraints
+
+4. **500 Internal Server Error**
+   - Check server logs
+   - Verify database connection
+   - Ensure all environment variables are set
+
+### Debug Tips
+
+1. **Check Collection Variables**
+   - View current variable values
+   - Ensure tokens and IDs are populated
+
+2. **Review Request Headers**
+   - Verify Authorization header is present
+   - Check Content-Type for POST/PATCH requests
+
+3. **Validate Request Body**
+   - Ensure JSON is properly formatted
+   - Check required vs optional fields
+
+## 📝 Notes
+
+- All timestamps are in ISO 8601 format
+- File uploads use multipart/form-data
+- Authentication tokens expire after 7 days
+- Rate limiting: 100 requests per 15 minutes in production
+- All responses follow the standard format: `{success, message, data, pagination?}`
+
+## 🔄 Updates
+
+When the API is updated:
+
+1. Re-import the updated collection
+2. Check for new endpoints or changed parameters
+3. Update any custom scripts or tests
+4. Verify authentication still works
+
+---
+
+Happy testing! 🚀
